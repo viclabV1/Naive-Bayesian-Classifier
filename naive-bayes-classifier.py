@@ -7,6 +7,7 @@
 # reviews in a set of test data
 
 import sys
+import math
 import re
 
 #First, we need to take in command line arguments.
@@ -19,7 +20,9 @@ testFileArg = sys.argv[3]
 # learned. 
 trainingFile = open(trainingFileArg)
 
-#After this we start our training function
+##
+##TRAINING FUNCTION
+##
 def training():
     #Vocab
     positiveDict = {}
@@ -49,7 +52,6 @@ def training():
                     negativeDict[wordTuple[0]] = wordTuple[1]
             negativeReviews += 1
             negativeWordCount += wordTuple[1]
-    print(positiveWordCount, negativeWordCount)
     #if occurences less than N, remove. do this for both positive and negative models
     removeKeys = []
     for word in positiveDict.keys():
@@ -65,13 +67,11 @@ def training():
         negativeDict.pop(key)
     return positiveDict, negativeDict, positiveWordCount, negativeWordCount, positiveReviews, negativeReviews
 
-
-
 #Function for getting word frequency
 def words(text) -> list:
     wordDict = {}
     #Look at each word
-    splitText = text.split();
+    splitText = text.split()[2:]
     #create list of all words
     for word in splitText:
         if word not in wordDict:
@@ -92,5 +92,34 @@ def words(text) -> list:
 #call training function
 posModel, negModel, posWordCount, negWordCount, posReviewCount, negReviewCount = training()
 #test file not opened until after training complete
+trainingFile.close()
 testFile = open(testFileArg)
-
+##
+##TEST FUNCTION
+##
+def test():
+    for review in testFile.readlines():
+        thisReview = review.split()
+        #p(pos)
+        probPosDoc = posReviewCount/(posReviewCount+negReviewCount)
+        probNegDoc = negReviewCount/(posReviewCount+negReviewCount)
+        #print(probNegDoc,probPosDoc)
+        probPosProduct = 0
+        probNegProduct = 0
+        for word in thisReview:
+            #Get product of probabilities of words being positive
+            if word in posModel:
+                probPosProduct += math.log((posModel[word]+1)/(posWordCount+len(posModel.keys())))
+            else:
+                probPosProduct += math.log((1/(posWordCount+len(posModel.keys()))))
+            #now do the same with negative
+            if word in negModel:
+                probNegProduct += math.log((negModel[word]+1)/(negWordCount+len(negModel.keys())))
+            else:
+                probNegProduct += math.log((1/(negWordCount+len(negModel.keys()))))
+        if  (probPosDoc * probPosProduct) > (probNegDoc * probNegProduct):
+            print(thisReview[0], 1)
+        else:
+            print(thisReview[0], 0)
+test()
+testFile.close()
