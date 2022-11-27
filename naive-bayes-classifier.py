@@ -108,6 +108,7 @@ def test():
         probNegProduct = 0
         for word in thisReview:
             #Get product of probabilities of words being positive
+            #Has to be done with logs because probabilities get too small and drop to 0
             if word in posModel:
                 probPosProduct += math.log((posModel[word]+1)/(posWordCount+len(posModel.keys())))
             else:
@@ -117,9 +118,10 @@ def test():
                 probNegProduct += math.log((negModel[word]+1)/(negWordCount+len(negModel.keys())))
             else:
                 probNegProduct += math.log((1/(negWordCount+len(negModel.keys()))))
+        #argmax(P(cj)*Product(P(wi|cj)))
         if  (probPosDoc * probPosProduct) > (probNegDoc * probNegProduct):
-            print(thisReview[0], 1)
+            print(thisReview[0], 1, probPosDoc * probPosProduct, probNegDoc * probNegProduct) 
         else:
-            print(thisReview[0], 0)
+            print(thisReview[0], 0, probPosDoc * probPosProduct, probNegDoc * probNegProduct)
 test()
 testFile.close()

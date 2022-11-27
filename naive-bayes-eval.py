@@ -1,3 +1,9 @@
+#Program Name: Naive Bayes Eval
+#Author: Victor Paul LaBrie
+#Date: November 13th, 2022
+#Problem: Implement a program that will evaluate 
+#the recall, accuracy, and precision of a 
+#Naive-Bayes Model
 import sys
 
 testFileArg= sys.argv[1]
@@ -12,7 +18,7 @@ falseNegatives = 0
 
 systemReview = testFile.readlines()
 goldReview = goldFile.readlines()
-
+#calculate tp, np, tf, nf
 for i in range(0, len(systemReview)):
     thisSysReview = systemReview[i].split()
     thisGoldReview = goldReview[i].split()
@@ -25,7 +31,10 @@ for i in range(0, len(systemReview)):
         trueNegatives +=1
     else:
         falseNegatives += 1
+#accuracy
 accuracy = (truePositives+trueNegatives)/(trueNegatives+truePositives+falseNegatives+falsePositives)
+#precision
 precision = truePositives/(truePositives+falsePositives)
+#recall
 recall = truePositives/(truePositives+falseNegatives)
 print("Accuracy: "+str(accuracy), "Precision: " + str(precision), "Recall: " + str(recall))
