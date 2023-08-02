@@ -32,9 +32,9 @@ for i in range(0, len(systemReview)):
     else:
         falseNegatives += 1
 #accuracy
-accuracy = (truePositives+trueNegatives)/(trueNegatives+truePositives+falseNegatives+falsePositives)
+accuracy = (truePositives+trueNegatives+1)/(trueNegatives+truePositives+falseNegatives+falsePositives+len(systemReview))
 #precision
-precision = truePositives/(truePositives+falsePositives)
+precision = (truePositives+1)/(truePositives+falsePositives+len(systemReview))
 #recall
-recall = truePositives/(truePositives+falseNegatives)
+recall = (truePositives+1)/(truePositives+falseNegatives+len(systemReview))
 print("Accuracy: "+str(accuracy), "Precision: " + str(precision), "Recall: " + str(recall))
