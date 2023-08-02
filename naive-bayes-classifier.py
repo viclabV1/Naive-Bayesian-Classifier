@@ -93,7 +93,11 @@ def words(text) -> list:
 posModel, negModel, posWordCount, negWordCount, posReviewCount, negReviewCount = training()
 #test file not opened until after training complete
 trainingFile.close()
-testFile = open(testFileArg)
+
+try:
+    testFile = open(testFileArg)
+except:
+    print("COULDN'T OPEN TEST FILE")
 ##
 ##TEST FUNCTION
 ##
